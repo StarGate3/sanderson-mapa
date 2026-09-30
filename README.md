@@ -2,7 +2,7 @@
 
 **[English](#english) · [Polski](#polski)**
 
-**Live page / Strona:** [https://YOUR-USERNAME.github.io/sanderson-mapa/](https://stargate3.github.io/sanderson-mapa/)
+**Live page / Strona:** [https://stargate3.github.io/sanderson-mapa/]
 
 ![Your progress: progress rings and books you're reading now](screenshots/progress.png)
 
