@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mapa czytania Sandersona</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,500;0,700;0,800;1,400&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<script>/* motyw ustawiany przed rysowaniem strony, żeby nie mignęła w złych kolorach */
+try { var th = localStorage.getItem("sanderson-theme"); if (th === "light" || th === "dark") document.documentElement.dataset.theme = th; } catch(e) {}</script>
+<style>
+:root{
+  --bg:#EEF1F7; --paper:#F8F9FC; --ink:#1C2140; --muted:#565C7A; --line:#C9CEDF;
+  --sel:#B08A14; --scad:#B4553A; --rosh:#1F7FA3; --nal:#A63A76; --hoid:#2F7F4F; --cos:#6A4DB0; --non:#5E6475;
+  --serif:"Alegreya", Georgia, "Times New Roman", serif;
+  --sans:"Alegreya Sans", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#141934; --paper:#1B2142; --ink:#E7E9F4; --muted:#A3A8C4; --line:#343B63;
+    --sel:#E0B93E; --scad:#E07F63; --rosh:#57B9DC; --nal:#DA70AC; --hoid:#6CC08D; --cos:#A68CF0; --non:#9AA0B4;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#141934; --paper:#1B2142; --ink:#E7E9F4; --muted:#A3A8C4; --line:#343B63;
+  --sel:#E0B93E; --scad:#E07F63; --rosh:#57B9DC; --nal:#DA70AC; --hoid:#6CC08D; --cos:#A68CF0; --non:#9AA0B4;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--serif);font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:48px 22px 80px}
+h1{font-weight:800;font-size:clamp(2.3rem,6vw,3.6rem);line-height:1.02;margin:0 0 14px;letter-spacing:-.01em}
+h2{font-weight:700;font-size:1.75rem;margin:64px 0 8px;line-height:1.15}
+h3{font-weight:700;font-size:1.2rem;margin:0}
+p{margin:0 0 12px;max-width:68ch}
+.lede{font-size:1.15rem;color:var(--muted);max-width:60ch}
+.sans{font-family:var(--sans)}
+a{color:inherit}
+
+:root{color-scheme:light dark}
+:root[data-theme="light"]{color-scheme:light}
+:root[data-theme="dark"]{color-scheme:dark}
+
+/* language + theme switch */
+.topbar{display:flex;justify-content:flex-end;align-items:center;flex-wrap:wrap;gap:10px;margin:0 0 18px}
+.langbar{display:flex}
+.tbtn{font-family:var(--sans);font-size:.85rem;font-weight:700;background:var(--paper);color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:5px 12px;min-height:34px;cursor:pointer}
+.tbtn:hover{color:var(--ink)}
+.tbtn:focus-visible{outline:2px solid var(--rosh);outline-offset:2px}
+.lang{font-family:var(--sans);font-size:.85rem;font-weight:700;letter-spacing:.04em;background:var(--paper);color:var(--muted);border:1px solid var(--line);padding:5px 12px;min-width:46px;min-height:34px;cursor:pointer}
+.lang:first-child{border-radius:4px 0 0 4px}
+.lang:last-child{border-radius:0 4px 4px 0;border-left:0}
+.lang:hover{color:var(--ink)}
+.lang[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.lang:focus-visible{outline:2px solid var(--rosh);outline-offset:2px}
+
+/* legend */
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin:26px 0 0;padding:0;list-style:none;font-family:var(--sans);font-size:.92rem;color:var(--muted)}
+.legend li{display:flex;align-items:center;gap:7px}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--c);flex:none}
+
+/* starts */
+.starts{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:2px;margin-top:18px;border:1px solid var(--line);background:var(--line)}
+.start{background:var(--paper);padding:18px 18px 16px}
+.start .for{font-family:var(--sans);font-size:.9rem;color:var(--muted);margin-bottom:4px}
+.start h3{font-size:1.25rem;margin-bottom:6px;color:var(--c)}
+.start p{font-size:.98rem;margin:0}
+.quote{font-size:.95rem;color:var(--muted);margin-top:14px}
+
+/* route */
+.controls{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;margin:18px 0 8px;font-family:var(--sans);font-size:.95rem}
+.controls label{display:flex;align-items:center;gap:8px;cursor:pointer}
+.controls input{width:18px;height:18px;accent-color:var(--rosh)}
+.progress{margin-left:auto;color:var(--muted)}
+.progress b{color:var(--ink)}
+.btn{font:inherit;font-family:var(--sans);font-size:.9rem;background:none;border:1px solid var(--line);color:var(--muted);padding:5px 12px;border-radius:4px;cursor:pointer}
+.btn:hover{color:var(--ink);border-color:var(--muted)}
+.btn:focus-visible,.stop button:focus-visible,.controls input:focus-visible{outline:2px solid var(--rosh);outline-offset:2px}
+
+.route{list-style:none;margin:10px 0 0;padding:0;position:relative}
+.route::before{content:"";position:absolute;left:21px;top:10px;bottom:10px;width:3px;background:var(--line);border-radius:2px}
+.stop{position:relative;display:grid;grid-template-columns:46px 1fr;gap:14px;padding:10px 0}
+.stop.opt.hidden{display:none}
+.stop button{position:relative;z-index:1;width:44px;height:44px;border-radius:50%;border:3px solid var(--c);background:var(--bg);color:var(--c);font-family:var(--sans);font-weight:700;font-size:.95rem;cursor:pointer;display:grid;place-items:center;padding:0}
+.stop.opt button{width:30px;height:30px;margin-left:7px;margin-top:6px;border-width:2px;font-size:.8rem}
+.stop.done button{background:var(--c);color:var(--bg)}
+.stop.done .t{text-decoration:line-through;text-decoration-thickness:1px;color:var(--muted)}
+.t{font-weight:700;font-size:1.15rem;line-height:1.25}
+.stop.opt .t{font-weight:500;font-size:1.02rem}
+.orig{font-family:var(--sans);font-size:.88rem;color:var(--muted)}
+.tag{display:inline-block;font-family:var(--sans);font-size:.8rem;font-weight:500;color:var(--c);border:1px solid var(--c);border-radius:3px;padding:0 6px;margin-left:6px;vertical-align:2px;white-space:nowrap}
+.note{font-size:.96rem;margin:4px 0 0;max-width:62ch}
+.note.warn{color:var(--c)}
+
+/* series chains */
+.series{margin-top:26px;padding-left:16px;border-left:4px solid var(--c)}
+.series h3{color:var(--c)}
+.series .sub{font-family:var(--sans);font-size:.9rem;color:var(--muted);margin:2px 0 10px}
+.chain{list-style:none;display:flex;flex-wrap:wrap;align-items:center;gap:8px 0;margin:0;padding:0}
+.chain li{display:flex;align-items:center}
+.chain li:not(:last-child)::after{content:"→";color:var(--c);font-family:var(--sans);font-weight:700;margin:0 8px}
+.chain.loose li::after{content:none !important}
+.chain.loose{gap:8px 10px}
+.b{background:var(--paper);border:1px solid var(--line);padding:5px 11px;border-radius:4px;font-size:.98rem;line-height:1.25}
+.b{font-family:var(--serif);color:var(--ink);text-align:left;cursor:pointer;position:relative;padding-left:30px}
+.b::before{content:"";position:absolute;left:10px;top:9px;width:12px;height:12px;border-radius:50%;border:2px solid var(--c)}
+.b.done{background:var(--c);border-color:var(--c);color:var(--bg)}
+.b.done small{color:var(--bg);opacity:.85}
+.b.done::before{background:var(--bg);border-color:var(--bg)}
+.b:hover{border-color:var(--c)}
+.b:focus-visible{outline:2px solid var(--c);outline-offset:2px}
+.count{font-family:var(--sans);font-size:.85rem;font-weight:500;color:var(--muted);margin-left:8px}
+.b small{display:block;font-family:var(--sans);font-size:.78rem;color:var(--muted)}
+.b.o{border-style:dashed}
+.b.new{border-color:var(--c)}
+.series .foot{font-size:.93rem;color:var(--muted);margin-top:10px}
+
+/* rules */
+.rules{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:2px;background:var(--line);border:1px solid var(--line)}
+.rules li{background:var(--paper);padding:14px 18px;font-size:1rem}
+.rules b{font-weight:700}
+
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:18px;margin-top:20px}
+.stat{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
+.stat .lbl{font-family:var(--sans);font-size:.95rem;font-weight:500}
+.stat .sub2{font-family:var(--sans);font-size:.85rem;color:var(--muted)}
+.ring-track{fill:none;stroke:var(--line)}
+.ring-val{fill:none;stroke-linecap:round;transition:stroke-dashoffset .4s}
+.ring-txt{font-family:var(--sans);font-weight:700;fill:var(--ink)}
+.pace{margin-top:26px;padding:16px 18px;background:var(--paper);border:1px solid var(--line)}
+.pace label{font-family:var(--sans);font-size:.98rem;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.pace input{width:5.5em;font:inherit;padding:4px 8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:4px}
+.pace p{margin:10px 0 0;font-size:1rem}
+.next{margin-top:18px;padding:16px 18px;border:2px solid var(--rosh);background:var(--paper)}
+.next h3{margin-bottom:8px}
+.next ul{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.next li{font-size:1rem}
+.next .k{font-family:var(--sans);font-size:.85rem;color:var(--muted);display:block}
+.next .t2{font-weight:700;color:var(--c)}
+.next .warn2{font-family:var(--sans);font-size:.85rem;color:var(--scad);display:block}
+details.sync{margin-top:18px;border:1px solid var(--line);background:var(--paper);padding:12px 18px}
+details.sync summary{cursor:pointer;font-family:var(--sans);font-weight:500}
+details.sync p{font-size:.95rem;margin-top:10px}
+details.sync textarea{width:100%;min-height:70px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.8rem;padding:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:4px;resize:vertical}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.msg{font-family:var(--sans);font-size:.9rem;color:var(--muted);min-height:1.2em}
+
+/* map */
+.mapbox{margin-top:18px;overflow-x:auto;border:1px solid var(--line);background:var(--paper)}
+.mapbox svg{display:block;width:100%;height:auto}
+.link{stroke:var(--line);stroke-dasharray:3 6;stroke-width:1.5}
+.pl-name{font-family:var(--serif);font-weight:700;font-size:17px;fill:var(--ink);text-anchor:middle}
+.pl-cnt{font-family:var(--sans);font-size:13px;fill:var(--muted);text-anchor:middle}
+
+/* timeline */
+.tlbox{margin-top:18px;overflow-x:auto;padding-bottom:32px}
+.tl{display:flex;align-items:flex-end;gap:4px;min-width:720px;border-bottom:2px solid var(--line);padding-top:8px}
+.yr{flex:1 0 26px;display:flex;flex-direction:column-reverse;align-items:center;gap:4px;padding-bottom:6px;position:relative}
+.yr .y{position:absolute;bottom:-24px;font-family:var(--sans);font-size:.75rem;color:var(--muted);white-space:nowrap}
+.yr.soon{flex:0 0 60px}
+.yr.soon .y{color:var(--ink)}
+.td{width:16px;height:16px;border-radius:50%;border:2px solid var(--c);background:transparent;padding:0;cursor:pointer;display:block}
+.td.done{background:var(--c)}
+.td.plan{border-style:dashed;cursor:default}
+.td:focus-visible{outline:2px solid var(--c);outline-offset:2px}
+.tlnote{margin-top:6px;font-size:.93rem;color:var(--muted)}
+.td.future{border-style:dashed}
+.td.reading{background:conic-gradient(var(--c) calc(var(--f,0) * 1turn),transparent 0)}
+
+/* reading now */
+.reading{margin-top:26px;padding:16px 18px;background:var(--paper);border:1px solid var(--line)}
+.reading h3{margin-bottom:10px}
+.readlist{list-style:none;margin:0;padding:0;display:grid;gap:16px}
+.readlist .empty{font-size:.98rem;color:var(--muted)}
+.rt{font-weight:700;font-size:1.1rem;color:var(--c);line-height:1.25}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin:6px 0 8px}
+.bar span{display:block;height:100%;background:var(--c);border-radius:4px}
+.rctl{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;font-family:var(--sans);font-size:.92rem}
+.rctl label{display:flex;align-items:center;gap:6px}
+.rctl input{width:5.5em;font:inherit;padding:3px 8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:4px}
+.rpct{font-weight:700;min-width:3.2em}
+.rctl .fin{margin-left:auto}
+.addrow{margin:14px 0 0;align-items:center}
+.addrow select{font:inherit;font-family:var(--sans);font-size:.95rem;padding:5px 8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:4px;flex:1 1 220px;min-width:0;max-width:100%}
+.stop.reading button{box-shadow:0 0 0 5px color-mix(in srgb,var(--c) 30%,transparent)}
+.rd{font-family:var(--sans);font-size:.88rem;font-weight:700;color:var(--c);margin-top:2px}
+.b.reading{background:linear-gradient(90deg,color-mix(in srgb,var(--c) 26%,var(--paper)) calc(var(--f,0) * 100%),var(--paper) 0);border-color:var(--c)}
+.next li{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 12px}
+.pace hr{border:0;border-top:1px solid var(--line);margin:16px 0}
+.pace select{font:inherit;padding:4px 8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:4px}
+.pace .hint{font-family:var(--sans);font-size:.85rem;color:var(--muted)}
+
+/* upcoming */
+.upgrp{font-family:var(--sans);font-size:.85rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:24px 0 8px}
+.upc{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.up{display:grid;grid-template-columns:160px 1fr;gap:6px 18px;background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--c);padding:14px 16px}
+.cd{display:block;font-family:var(--sans);font-weight:700;font-size:1.1rem;color:var(--c);line-height:1.2}
+.dt{display:block;font-family:var(--sans);font-size:.85rem;color:var(--muted);margin-top:2px}
+.t3{font-weight:700;font-size:1.1rem;line-height:1.25}
+.up p{margin:4px 0 0;font-size:.96rem}
+.upact{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px;font-family:var(--sans);font-size:.9rem;color:var(--muted)}
+
+.sring svg{vertical-align:-6px}
+
+/* toast */
+.toastwrap{position:fixed;left:0;right:0;bottom:0;padding:0 16px calc(16px + env(safe-area-inset-bottom,0px));display:flex;justify-content:center;pointer-events:none;z-index:10}
+.toast{pointer-events:auto;max-width:560px;background:var(--ink);color:var(--bg);padding:12px 44px 12px 16px;border-radius:6px;font-family:var(--sans);font-size:.95rem;position:relative;box-shadow:0 6px 24px rgba(10,14,40,.3)}
+.toast[hidden]{display:none}
+.toast button{position:absolute;right:8px;top:8px;background:none;border:0;color:inherit;font-size:1.2rem;cursor:pointer;line-height:1}
+
+footer{margin-top:64px;font-family:var(--sans);font-size:.88rem;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+@media (max-width:560px){
+  body{font-size:17px}
+  .wrap{padding:32px 16px 64px}
+  .progress{margin-left:0;width:100%}
+  .pl-name{font-size:22px}
+  .pl-cnt{font-size:16px}
+  .chain:not(.loose),.chain:not(.loose) li{flex-direction:column;align-items:flex-start}
+  .chain:not(.loose) li:not(:last-child)::after{content:"↓";margin:3px 0 3px 16px}
+  .up{grid-template-columns:1fr}
+  .rctl .fin{margin-left:0}
+}
+@media (prefers-reduced-motion:no-preference){
+  .stop button{transition:background .15s,color .15s}
+}
+</style>
+</head>
+<body>
+<!--
+  Tłumaczenia: element z atrybutem data-en dostaje po przełączeniu na EN ten HTML zamiast swojego.
+  data-en-aria-label / data-en-placeholder robią to samo dla atrybutów.
+  Identyfikatorem książki zawsze zostaje polski tytuł (zapis postępu działa w obu językach).
+-->
+<div class="wrap">
+
+<header>
+  <div class="topbar">
+    <button type="button" class="tbtn" id="themeBtn"></button>
+    <div class="langbar" role="group" aria-label="Język / Language">
+      <button type="button" class="lang" data-lang="pl" aria-pressed="true" title="Polski">PL</button>
+      <button type="button" class="lang" data-lang="en" aria-pressed="false" title="English">EN</button>
+    </div>
+  </div>
+  <h1 data-en="Brandon Sanderson Reading Map">Mapa czytania Brandona Sandersona</h1>
+  <p class="lede" data-en="Where to start, what order to read the Cosmere in, and how the books line up in each series. As of September 2026.">Od czego zacząć, w jakiej kolejności czytać uniwersum Cosmere i jak ułożone są tomy w każdej serii. Stan na wrzesień 2026.</p>
+  <ul class="legend" aria-label="Legenda kolorów" data-en-aria-label="Colour legend">
+    <li><span class="dot" style="--c:var(--sel)"></span><span>Sel (Elantris)</span></li>
+    <li><span class="dot" style="--c:var(--scad)"></span><span data-en="Scadrial (Mistborn)">Scadrial (Z mgły zrodzony)</span></li>
+    <li><span class="dot" style="--c:var(--rosh)"></span><span data-en="Roshar (The Stormlight Archive)">Roshar (Archiwum Burzowego Światła)</span></li>
+    <li><span class="dot" style="--c:var(--nal)"></span><span data-en="Nalthis (Warbreaker)">Nalthis (Rozjemca)</span></li>
+    <li><span class="dot" style="--c:var(--hoid)"></span><span data-en="Hoid's Travails">Opowieści Hoida</span></li>
+    <li><span class="dot" style="--c:var(--cos)"></span><span data-en="Other Cosmere worlds">Inne światy Cosmere</span></li>
+    <li><span class="dot" style="--c:var(--non)"></span><span data-en="Outside the Cosmere">Poza Cosmere</span></li>
+  </ul>
+</header>
+
+<section>
+  <h2 data-en="Where to start">Gdzie zacząć</h2>
+  <p data-en="Sanderson himself suggests several entry points, depending on what you enjoy. Each of these books opens a self-contained story or the first volume of a series.">Sanderson sam poleca kilka wejść, zależnie od tego, co lubisz. Każda z tych książek otwiera zamkniętą historię albo pierwszy tom serii.</p>
+  <div class="starts">
+    <div class="start" style="--c:var(--scad)"><div class="for" data-en="The classic start, most often recommended">Klasyczny start, polecany najczęściej</div><h3 data-en="Mistborn">Z mgły zrodzony</h3><p data-en="A revolution against a tyrant, a heist-style plot and metal-based magic. The trilogy is complete.">Rewolucja przeciw tyranowi, skok w stylu heist i magia metali. Trylogia jest zamknięta.</p></div>
+    <div class="start" style="--c:var(--sel)"><div class="for" data-en="If you rarely read fantasy">Jeśli rzadko czytasz fantasy</div><h3>Elantris</h3><p data-en="A single volume, the author's debut. A good no-commitment test of his style.">Jeden tom, debiut autora. Dobry test stylu bez zobowiązań.</p></div>
+    <div class="start" style="--c:var(--rosh)"><div class="for" data-en="If you like big epics">Jeśli lubisz wielkie epopeje</div><h3 data-en="The Way of Kings">Droga królów</h3><p data-en="The backbone of the Cosmere. The volumes run 1000+ pages, so it's a marathon.">Kręgosłup Cosmere. Tomy po 1000+ stron, więc to maraton.</p></div>
+    <div class="start" style="--c:var(--hoid)"><div class="for" data-en="If you want something light">Jeśli chcesz czegoś lekkiego</div><h3 data-en="Tress of the Emerald Sea">Warkocz ze Szmaragdowego Morza</h3><p data-en="A funny, fairy-tale standalone in the spirit of The Princess Bride.">Baśniowa, zabawna samodzielna powieść w stylu Narzeczonej dla księcia.</p></div>
+    <div class="start" style="--c:var(--sel)"><div class="for" data-en="If you have one evening">Jeśli masz jeden wieczór</div><h3 data-en="The Emperor's Soul">Dusza cesarza</h3><p data-en="A Hugo-winning novella. Set in the world of Elantris, but it works on its own.">Nowela nagrodzona Hugo. Dzieje się w świecie Elantris, ale działa samodzielnie.</p></div>
+    <div class="start" style="--c:var(--non)"><div class="for" data-en="If you prefer science fiction">Jeśli wolisz science fiction</div><h3 data-en="Skyward / Steelheart">Skyward / Stalowe Serce</h3><p data-en="YA science fiction with fighter pilots, or superheroes who are the villains. Outside the Cosmere.">Młodzieżowe SF z pilotami myśliwców albo superbohaterowie, którzy są złoczyńcami. Poza Cosmere.</p></div>
+  </div>
+</section>
+
+<section id="postep">
+  <h2 data-en="Your progress">Twój postęp</h2>
+  <p data-en="Everything updates live from what you tick off below, including the books you're partway through. Page counts are approximate, based on typical editions.">Wszystko liczy się na bieżąco z tego, co odhaczasz niżej, łącznie z książkami w trakcie. Liczby stron są przybliżone, na podstawie typowych wydań.</p>
+  <div class="stats" id="stats"></div>
+  <div class="reading">
+    <h3 data-en="Reading now">Czytam teraz</h3>
+    <ul class="readlist" id="readList"></ul>
+    <div class="row addrow">
+      <select id="readAdd" aria-label="Wybierz książkę, którą zaczynasz" data-en-aria-label="Choose a book to start"></select>
+      <button class="btn" type="button" id="readAddBtn" data-en="Start reading">Zacznij czytać</button>
+    </div>
+  </div>
+  <div class="pace">
+    <label for="pace"><span data-en="I read about">Czytam około</span> <input type="number" id="pace" min="1" max="1000" step="5" value="40"> <span data-en="pages a day">stron dziennie</span></label>
+    <p id="paceOut"></p>
+    <hr>
+    <label for="listen"><span data-en="I listen to about">Słucham około</span> <input type="number" id="listen" min="0.25" max="24" step="0.25" value="1"> <span data-en="hours a day at">h dziennie z prędkością</span> <select id="speed" aria-label="Prędkość odtwarzania" data-en-aria-label="Playback speed"></select></label>
+    <p id="listenOut"></p>
+    <p class="hint" data-en="Exact running times of the Polish audiobooks from Audioteka (The Stormlight Archive, The Lost Metal, Tress, Yumi, The Sunlit Man, The Frugal Wizard) and Storytel (the rest of Mistborn, The Reckoners, Skyward, Starsight, Cytonic, Alcatraz 1–5), plus the English recordings of Bastille and Songs of the Dead. Books without a full audiobook on either service (e.g. Elantris, Warbreaker, The Emperor's Soul, Legion) are estimated from the page count, about 24 pages per hour of recording.">Dokładne czasy polskich nagrań z Audioteki (Archiwum Burzowego Światła, Zaginiony metal, Warkocz, Yumi, Słoneczny Mąż, Oszczędnego czarodzieja) i Storytela (reszta Z mgły zrodzonego, Mściciele, Do gwiazd, Wśród gwiazd, Cytoniczka, Alcatraz 1–5), a także angielskie nagrania Bastille i Songs of the Dead. Książki bez pełnego audiobooka w tych serwisach (m.in. Elantris, Rozjemca, Dusza cesarza, Legion) szacuję z liczby stron, ok. 24 strony na godzinę nagrania.</p>
+  </div>
+  <div class="next" id="next"></div>
+  <details class="sync">
+    <summary data-en="Move progress between computers or browsers">Przenieś postęp między komputerami lub przeglądarkami</summary>
+    <p data-en="Copy the code in one place and paste it in the other, e.g. between the online version and a file on disk. Loading a code replaces your current progress. The code also carries the books you're reading and your pace settings, and works in both language versions.">Skopiuj kod w jednym miejscu i wklej go w drugim, np. między wersją online a plikiem na dysku. Wczytanie kodu zastępuje obecny postęp. Kod obejmuje też książki w trakcie i ustawienia tempa, działa w obu wersjach językowych.</p>
+    <div class="row"><button class="btn" type="button" id="expBtn" data-en="Copy progress code">Skopiuj kod postępu</button></div>
+    <textarea id="expOut" readonly aria-label="Kod postępu do skopiowania" data-en-aria-label="Progress code to copy" placeholder="Tu pojawi się kod postępu" data-en-placeholder="The progress code will appear here"></textarea>
+    <div class="row" style="margin-top:14px"><button class="btn" type="button" id="impBtn" data-en="Load code">Wczytaj kod</button></div>
+    <textarea id="impIn" aria-label="Wklej kod postępu" data-en-aria-label="Paste a progress code" placeholder="Wklej tutaj kod skopiowany z drugiej wersji" data-en-placeholder="Paste the code copied from the other version here"></textarea>
+    <div class="msg" id="syncMsg" aria-live="polite"></div>
+  </details>
+</section>
+
+<section id="zapowiedzi">
+  <h2 data-en="Upcoming releases">Zapowiedzi i premiery</h2>
+  <p data-en="Upcoming releases, recent new books and titles announced without a date. The countdown uses today's date on your device. Dates refer to the English-language editions; Polish translations usually come later.">Najbliższe premiery, niedawne nowości i książki zapowiedziane bez daty. Odliczanie liczy się od dzisiejszej daty na Twoim urządzeniu. Daty dotyczą wydań anglojęzycznych; polskie tłumaczenia ukazują się zwykle później.</p>
+  <div id="upc"></div>
+</section>
+
+<section>
+  <h2 data-en="The main Cosmere path">Główna ścieżka Cosmere</h2>
+  <p data-en="A suggested order for the whole universe, close to publication order, with a few shifts to avoid spoilers. Smaller dots are optional works. Click a dot to mark a book as read; progress is saved in this browser.">Proponowana kolejność całego uniwersum, zbliżona do kolejności wydań, z kilkoma przesunięciami, żeby nie łapać spoilerów. Mniejsze kropki to utwory opcjonalne. Kliknij kropkę, żeby oznaczyć książkę jako przeczytaną; postęp zapisuje się w tej przeglądarce.</p>
+  <div class="controls">
+    <label><input type="checkbox" id="showOpt" checked> <span data-en="Show optional works">Pokaż utwory opcjonalne</span></label>
+    <button class="btn" id="reset" type="button" data-en="Clear progress">Wyczyść postęp</button>
+    <span class="progress" id="progress" aria-live="polite"></span>
+  </div>
+  <ol class="route" id="route"></ol>
+</section>
+
+
+<section>
+  <h2 data-en="Map of the Cosmere worlds">Mapa światów Cosmere</h2>
+  <p data-en="Each planet is sized by how many pages are set there and fills with colour as you read. Dotted lines are the routes of Hoid, who turns up almost everywhere.">Każda planeta jest tym większa, im więcej stron się na niej dzieje, i wypełnia się kolorem w miarę czytania. Kropkowane linie to trasy Hoida, który pojawia się niemal wszędzie.</p>
+  <div class="mapbox"><svg id="map" viewBox="0 0 720 420" role="img" aria-label="Mapa światów Cosmere z postępem czytania"></svg></div>
+</section>
+
+<section>
+  <h2 data-en="Publication timeline">Oś czasu wydań</h2>
+  <p data-en="Each dot is one title, placed in its release year. Filled dots are read; you can click the dots too.">Każda kropka to jedna pozycja, w roku premiery. Wypełnione są przeczytane; kropki też można klikać.</p>
+  <div class="tlbox"><div class="tl" id="tl"></div></div>
+  <p class="tlnote" data-en="A dot with a dashed outline is an announced book with no release date.">Kropka z przerywaną ramką to zapowiedź bez daty premiery.</p>
+</section>
+
+<section>
+  <h2 data-en="Order within each series">Kolejność w poszczególnych seriach</h2>
+  <p data-en="If you read series by series, follow these chains. Dashed frames are optional works. You can click the books here too, and the ticks are shared with the main path: read once, shown in both places.">Jeśli czytasz serię po serii, trzymaj się tych łańcuchów. Ramki przerywane to utwory opcjonalne. Książki też możesz klikać, a zaznaczenia łączą się z główną ścieżką: to samo przeczytane raz, widać w obu miejscach.</p>
+
+  <div class="series" style="--c:var(--scad)">
+    <h3><span class="nm" data-en="Mistborn, Era 1">Z mgły zrodzony, Era 1</span></h3>
+    <div class="sub" data-en="Scadrial, completed trilogy">Scadrial, trylogia zamknięta</div>
+    <ol class="chain">
+      <li><button type="button" class="b">Z mgły zrodzony<small data-en="2006">The Final Empire, 2006</small></button></li>
+      <li><button type="button" class="b">Studnia wstąpienia<small data-en="2007">The Well of Ascension, 2007</small></button></li>
+      <li><button type="button" class="b">Bohater wieków<small data-en="2008">The Hero of Ages, 2008</small></button></li>
+    </ol>
+    <p class="foot" data-en="The short story The Eleventh Metal is a prequel you can read at any point. Secret History complements Era 1 but spoils its ending.">Opowiadanie Jedenasty metal to prequel, można je przeczytać w dowolnym momencie. Tajna historia uzupełnia Erę 1, ale zdradza jej zakończenie.</p>
+  </div>
+
+  <div class="series" style="--c:var(--scad)">
+    <h3><span class="nm" data-en="Mistborn, Era 2 (Wax and Wayne)">Z mgły zrodzony, Era 2 (seria Waxa i Wayne'a)</span></h3>
+    <div class="sub" data-en="Scadrial 300 years later, with a Western feel">Scadrial 300 lat później, klimat westernu</div>
+    <ol class="chain">
+      <li><button type="button" class="b">Stop prawa<small data-en="2011">The Alloy of Law, 2011</small></button></li>
+      <li><button type="button" class="b">Cienie tożsamości<small data-en="2015">Shadows of Self, 2015</small></button></li>
+      <li><button type="button" class="b">Żałobne opaski<small data-en="2016">The Bands of Mourning, 2016</small></button></li>
+      <li><button type="button" class="b o">Tajna historia<small data-en="novella, 2016">Secret History, 2016</small></button></li>
+      <li><button type="button" class="b">Zaginiony metal<small data-en="2022">The Lost Metal, 2022</small></button></li>
+    </ol>
+    <p class="foot" data-en="Era 3 is in the works. The humorous Allomancer Jak and the Pits of Eltania is an optional extra for Era 2.">Era 3 jest w przygotowaniu. Humorystyczne Allomanta Jak i Czeluście Eltanii to opcjonalny dodatek do Ery 2.</p>
+  </div>
+
+  <div class="series" style="--c:var(--rosh)">
+    <h3><span class="nm" data-en="The Stormlight Archive">Archiwum Burzowego Światła</span></h3>
+    <div class="sub" data-en="Roshar, first arc (books 1–5) complete">Roshar, pierwszy łuk (tomy 1–5) zamknięty</div>
+    <ol class="chain">
+      <li><button type="button" class="b">Droga królów<small data-en="2010">The Way of Kings, 2010</small></button></li>
+      <li><button type="button" class="b">Słowa światłości<small data-en="2014">Words of Radiance, 2014</small></button></li>
+      <li><button type="button" class="b">Tancerka krawędzi<small data-en="novella, 2016">Edgedancer, nowela, 2016</small></button></li>
+      <li><button type="button" class="b">Dawca przysięgi<small data-en="2017">Oathbringer, 2017</small></button></li>
+      <li><button type="button" class="b">Odprysk świtu<small data-en="novella, 2020">Dawnshard, nowela, 2020</small></button></li>
+      <li><button type="button" class="b">Rytm wojny<small data-en="2020">Rhythm of War, 2020</small></button></li>
+      <li><button type="button" class="b">Wiatr i prawda<small data-en="2024">Wind and Truth, 2024</small></button></li>
+    </ol>
+    <p class="foot" data-en="Treat both novellas as full volumes, because their events come back in the main series. Read Warbreaker before Words of Radiance.">Obie nowele traktuj jak pełnoprawne tomy, bo ich wydarzenia wracają w głównej serii. Przed Słowami światłości przeczytaj Rozjemcę.</p>
+  </div>
+
+  <div class="series" style="--c:var(--sel)">
+    <h3><span class="nm">Sel</span></h3>
+    <div class="sub" data-en="The world of Elantris, sequels announced">Świat Elantris, kontynuacje zapowiedziane</div>
+    <ol class="chain">
+      <li><button type="button" class="b">Elantris<small>2005</small></button></li>
+      <li><button type="button" class="b o">Nadzieja Elantris<small data-en="short story">The Hope of Elantris, opowiadanie</small></button></li>
+      <li><button type="button" class="b o">Dusza cesarza<small data-en="novella, 2012">The Emperor's Soul, nowela, 2012</small></button></li>
+    </ol>
+  </div>
+
+  <div class="series" style="--c:var(--nal)">
+    <h3><span class="nm">Nalthis</span></h3>
+    <div class="sub" data-en="Standalone novel, sequel announced">Powieść samodzielna, kontynuacja zapowiedziana</div>
+    <ol class="chain">
+      <li><button type="button" class="b">Rozjemca<small data-en="2009, free e-book on the author's website">Warbreaker, 2009, darmowy e-book po angielsku na stronie autora</small></button></li>
+    </ol>
+  </div>
+
+  <div class="series" style="--c:var(--hoid)">
+    <h3><span class="nm" data-en="Hoid's Travails">Opowieści Hoida (Hoid's Travails)</span></h3>
+    <div class="sub" data-en="Standalone novels narrated by Hoid, unnumbered">Samodzielne powieści opowiadane przez Hoida, bez numeracji</div>
+    <ol class="chain loose">
+      <li><button type="button" class="b">Warkocz ze Szmaragdowego Morza<small data-en="2023">Tress of the Emerald Sea, 2023</small></button></li>
+      <li><button type="button" class="b">Yumi i Malarz Koszmarów<small data-en="2023">Yumi and the Nightmare Painter, 2023</small></button></li>
+      <li><button type="button" class="b">The Fires of December<small data-en="e-book and audio 6 Oct 2026, print 8 Dec 2026">e-book i audio 6.10.2026, druk 8.12.2026</small></button></li>
+    </ol>
+    <p class="foot" data-en="The author says they can be read in any order, so there are no arrows here.">Autor mówi, że można je czytać w dowolnej kolejności, dlatego nie ma tu strzałek.</p>
+  </div>
+
+  <div class="series" style="--c:var(--cos)">
+    <h3><span class="nm" data-en="Other Cosmere">Pozostałe Cosmere</span></h3>
+    <div class="sub" data-en="Standalone novels, novellas and comics">Pojedyncze powieści, nowele i komiksy</div>
+    <ol class="chain loose">
+      <li><button type="button" class="b">Słoneczny Mąż<small data-en="2023, after The Lost Metal">The Sunlit Man, 2023, po Zaginionym metalu</small></button></li>
+      <li><button type="button" class="b">Isles of the Emberdark<small data-en="2025, after The Sunlit Man">2025, po Słonecznym Mężu</small></button></li>
+      <li><button type="button" class="b o">Pozostałe teksty z W bezkres magii<small data-en="collection, 2016">Arcanum Unbounded, zbiór, 2016</small></button></li>
+      <li><button type="button" class="b o">Biały Piasek 1–3<small data-en="graphic novel">White Sand, powieść graficzna</small></button></li>
+    </ol>
+  </div>
+
+  <div class="series" style="--c:var(--non)">
+    <h3><span class="nm">Skyward (Cytoverse)</span></h3>
+    <div class="sub" data-en="YA science fiction, outside the Cosmere">Młodzieżowe science fiction, poza Cosmere</div>
+    <ol class="chain">
+      <li><button type="button" class="b o">Defending Elysium<small data-en="short story, prequel">opowiadanie, prequel</small></button></li>
+      <li><button type="button" class="b">Skyward<small>2018</small></button></li>
+      <li><button type="button" class="b">Starsight<small>2019</small></button></li>
+      <li><button type="button" class="b o">Sunreach<small data-en="novella">nowela</small></button></li>
+      <li><button type="button" class="b o">ReDawn<small data-en="novella">nowela</small></button></li>
+      <li><button type="button" class="b">Cytonic<small>2021</small></button></li>
+      <li><button type="button" class="b o">Evershore<small data-en="novella">nowela</small></button></li>
+      <li><button type="button" class="b">Defiant<small>2023</small></button></li>
+      <li><button type="button" class="b">Blightfall<small data-en="Riftwake #1, 1 Sep 2026">Riftwake #1, 1.09.2026</small></button></li>
+    </ol>
+    <p class="foot" data-en="The novellas and Blightfall were co-written with Janci Patterson. Riftwake is a new trilogy continuing Skyward.">Nowele i Blightfall powstały we współpracy z Janci Patterson. Riftwake to nowa trylogia kontynuująca Skyward.</p>
+  </div>
+
+  <div class="series" style="--c:var(--non)">
+    <h3><span class="nm" data-en="The Reckoners">Mściciele (The Reckoners)</span></h3>
+    <ol class="chain">
+      <li><button type="button" class="b">Stalowe Serce<small data-en="2013">Steelheart, 2013</small></button></li>
+      <li><button type="button" class="b o">Mitosis<small data-en="novella">nowela</small></button></li>
+      <li><button type="button" class="b">Firefight<small>2015</small></button></li>
+      <li><button type="button" class="b">Calamity<small>2016</small></button></li>
+    </ol>
+  </div>
+
+  <div class="series" style="--c:var(--non)">
+    <h3><span class="nm">Legion</span></h3>
+    <ol class="chain">
+      <li><button type="button" class="b">Legion<small>2012</small></button></li>
+      <li><button type="button" class="b">Skin Deep<small>2014</small></button></li>
+      <li><button type="button" class="b">Lies of the Beholder<small>2018</small></button></li>
+    </ol>
+    <p class="foot" data-en="All three novellas are also collected in one volume, Legion: The Many Lives of Stephen Leeds.">Po polsku wszystkie trzy nowele wyszły razem jako Legion.</p>
+  </div>
+
+  <div class="series" style="--c:var(--non)">
+    <h3><span class="nm" data-en="Alcatraz Versus the Evil Librarians">Alcatraz kontra Bibliotekarze</span></h3>
+    <div class="sub" data-en="A humorous series for younger readers">Humorystyczna seria dla młodszych czytelników</div>
+    <ol class="chain">
+      <li><button type="button" class="b">Alcatraz Versus the Evil Librarians</button></li>
+      <li><button type="button" class="b">The Scrivener's Bones</button></li>
+      <li><button type="button" class="b">The Knights of Crystallia</button></li>
+      <li><button type="button" class="b">The Shattered Lens</button></li>
+      <li><button type="button" class="b">The Dark Talent</button></li>
+      <li><button type="button" class="b">Bastille Versus the Evil Librarians</button></li>
+    </ol>
+  </div>
+
+  <div class="series" style="--c:var(--non)">
+    <h3><span class="nm" data-en="Standalones and more">Samodzielne i inne</span></h3>
+    <ol class="chain loose">
+      <li><button type="button" class="b">Rytmatysta<small data-en="2013">The Rithmatist, 2013</small></button></li>
+      <li><button type="button" class="b">Oszczędnego czarodzieja poradnik przetrwania w średniowiecznej Anglii<small>2023</small></button></li>
+      <li><button type="button" class="b">Songs of the Dead<small data-en="The Strata Wars #1, with P. Orullian, June 2026">The Strata Wars #1, z P. Orullianem, 06.2026</small></button></li>
+      <li><button type="button" class="b o">Stan idealny<small data-en="novella">Perfect State, nowela</small></button></li>
+      <li><button type="button" class="b o">Snapshot, Dreamer<small data-en="novellas">nowele</small></button></li>
+    </ol>
+    <p class="foot" data-en="Sanderson also finished Robert Jordan's The Wheel of Time (books 12–14), but those only work after Jordan's eleven earlier volumes.">Sanderson dokończył też Koło czasu Roberta Jordana (tomy 12–14), ale te książki czyta się tylko po jedenastu wcześniejszych tomach Jordana.</p>
+  </div>
+</section>
+
+<section>
+  <h2 data-en="Rules worth keeping">Zasady, których warto pilnować</h2>
+  <ul class="rules">
+    <li data-en="<b>Warbreaker before Words of Radiance.</b> Characters from Nalthis play an important role in the Stormlight Archive from book two onward."><b>Rozjemca przed Słowami światłości.</b> Postaci z Nalthis grają ważną rolę w Archiwum Burzowego Światła od drugiego tomu.</li>
+    <li data-en="<b>Secret History only after all of Era 1,</b> ideally after The Bands of Mourning. It spoils the ending of The Hero of Ages."><b>Tajna historia dopiero po całej Erze 1,</b> najlepiej po Żałobnych opaskach. Zdradza zakończenie Bohatera wieków.</li>
+    <li data-en="<b>The Sunlit Man after The Lost Metal and Rhythm of War.</b> It assumes you know events from both series."><b>Słoneczny Mąż po Zaginionym metalu i Rytmie wojny.</b> Zakłada znajomość wydarzeń z obu serii.</li>
+    <li data-en="<b>Don't skip Edgedancer or Dawnshard.</b> They're short, but the main series builds on them."><b>Nie pomijaj Tancerki krawędzi ani Odprysku świtu.</b> To krótkie teksty, ale główna seria z nich korzysta.</li>
+    <li data-en="<b>Series outside the Cosmere</b> (Skyward, The Reckoners, Legion, Alcatraz, The Rithmatist) can be read whenever you like, independently of the rest."><b>Serie poza Cosmere</b> (Skyward, Mściciele, Legion, Alcatraz, Rytmatysta) możesz czytać kiedy chcesz, niezależnie od reszty.</li>
+  </ul>
+</section>
+
+<footer data-en="English titles follow the original editions. Page counts are approximate (typical English-language editions), so treat the page statistics as estimates. New releases come out often, so it's worth checking the author's website.">
+  Polskie tytuły według wydań MAG, Zysk i Audioteki; tam, gdzie polskiego wydania nie ma lub tytuł jest niepewny, podaję oryginalny. Liczby stron są orientacyjne (wg typowych wydań anglojęzycznych), więc traktuj statystyki stron jako szacunek. Nowe premiery pojawiają się często, więc warto sprawdzać stronę autora.
+</footer>
+</div>
+<div class="toastwrap"><div class="toast" id="toast" role="status" hidden><span id="toastTxt"></span><button type="button" id="toastX" aria-label="Zamknij" data-en-aria-label="Close">×</button></div></div>
+
+<script>
+// o/n: opis i notka po polsku; oe/ne: to samo po angielsku
+const R = [
+  {t:"Elantris", o:"2005", oe:"2005", c:"sel", s:"Sel", n:"Debiut autora i łagodne wejście w Cosmere.", ne:"The author's debut and a gentle way into the Cosmere."},
+  {t:"Nadzieja Elantris", o:"The Hope of Elantris, opowiadanie", oe:"short story", c:"sel", s:"Sel", opt:1},
+  {t:"Z mgły zrodzony", o:"Mistborn: The Final Empire, 2006", oe:"2006", c:"scad", s:"Era 1"},
+  {t:"Studnia wstąpienia", o:"The Well of Ascension, 2007", oe:"2007", c:"scad", s:"Era 1"},
+  {t:"Bohater wieków", o:"The Hero of Ages, 2008", oe:"2008", c:"scad", s:"Era 1"},
+  {t:"Rozjemca", o:"Warbreaker, 2009", oe:"2009", c:"nal", s:"Nalthis", n:"Obowiązkowo przed Słowami światłości.", ne:"A must before Words of Radiance.", w:1},
+  {t:"Dusza cesarza", o:"The Emperor's Soul, nowela, 2012", oe:"novella, 2012", c:"sel", s:"Sel", opt:1},
+  {t:"Droga królów", o:"The Way of Kings, 2010", oe:"2010", c:"rosh", s:"Archiwum 1"},
+  {t:"Stop prawa", o:"The Alloy of Law, 2011", oe:"2011", c:"scad", s:"Era 2", n:"Lżejszy przerywnik między grubymi tomami Archiwum.", ne:"A lighter break between the thick Stormlight volumes."},
+  {t:"Słowa światłości", o:"Words of Radiance, 2014", oe:"2014", c:"rosh", s:"Archiwum 2"},
+  {t:"Cienie tożsamości", o:"Shadows of Self, 2015", oe:"2015", c:"scad", s:"Era 2"},
+  {t:"Żałobne opaski", o:"The Bands of Mourning, 2016", oe:"2016", c:"scad", s:"Era 2"},
+  {t:"Tajna historia", o:"Mistborn: Secret History, nowela, 2016", oe:"novella, 2016", c:"scad", s:"Scadrial", n:"Czytaj dopiero teraz, zdradza zakończenie Ery 1.", ne:"Read it only now, it spoils the ending of Era 1.", w:1},
+  {t:"Jedenasty metal, Allomanta Jak", o:"opowiadania", oe:"short stories", c:"scad", s:"Scadrial", opt:1},
+  {t:"Tancerka krawędzi", o:"Edgedancer, nowela, 2016", oe:"novella, 2016", c:"rosh", s:"Archiwum 2.5"},
+  {t:"Dawca przysięgi", o:"Oathbringer, 2017", oe:"2017", c:"rosh", s:"Archiwum 3"},
+  {t:"Pozostałe teksty z W bezkres magii", o:"Arcanum Unbounded: m.in. Sixth of the Dusk, Shadows for Silence in the Forests of Hell", oe:"incl. Sixth of the Dusk, Shadows for Silence in the Forests of Hell", c:"cos", s:"Cosmere", opt:1},
+  {t:"Biały Piasek 1–3", o:"White Sand, powieść graficzna", oe:"graphic novel", c:"cos", s:"Taldain", opt:1},
+  {t:"Odprysk świtu", o:"Dawnshard, nowela, 2020", oe:"novella, 2020", c:"rosh", s:"Archiwum 3.5"},
+  {t:"Rytm wojny", o:"Rhythm of War, 2020", oe:"2020", c:"rosh", s:"Archiwum 4"},
+  {t:"Zaginiony metal", o:"The Lost Metal, 2022", oe:"2022", c:"scad", s:"Era 2", n:"Zamyka Erę 2 i mocno łączy się z resztą Cosmere.", ne:"Closes Era 2 and ties in closely with the rest of the Cosmere."},
+  {t:"Warkocz ze Szmaragdowego Morza", o:"Tress of the Emerald Sea, 2023", oe:"2023", c:"hoid", s:"Hoid", n:"Pasuje w dowolnym miejscu ścieżki, także na sam początek.", ne:"Fits anywhere on the path, including the very start."},
+  {t:"Yumi i Malarz Koszmarów", o:"Yumi and the Nightmare Painter, 2023", oe:"2023", c:"hoid", s:"Hoid"},
+  {t:"Słoneczny Mąż", o:"The Sunlit Man, 2023", oe:"2023", c:"cos", s:"Canticle", n:"Dopiero po Zaginionym metalu i Rytmie wojny.", ne:"Only after The Lost Metal and Rhythm of War.", w:1},
+  {t:"Wiatr i prawda", o:"Wind and Truth, 2024", oe:"2024", c:"rosh", s:"Archiwum 5", n:"Finał pierwszego łuku Archiwum.", ne:"The finale of the first Stormlight arc."},
+  {t:"Isles of the Emberdark", o:"2025", oe:"2025", c:"cos", s:"Cosmere"},
+  {t:"The Fires of December", o:"e-book i audio 6.10.2026, druk 8.12.2026", oe:"e-book and audio 6 Oct 2026, print 8 Dec 2026", c:"hoid", s:"Hoid", n:"Najnowsza książka Cosmere.", ne:"The newest Cosmere book."}
+];
+// angielskie tytuły dla książek, których identyfikatorem jest polski tytuł
+const EN = {
+  "Nadzieja Elantris":"The Hope of Elantris", "Dusza cesarza":"The Emperor's Soul",
+  "Z mgły zrodzony":"Mistborn: The Final Empire", "Studnia wstąpienia":"The Well of Ascension", "Bohater wieków":"The Hero of Ages",
+  "Stop prawa":"The Alloy of Law", "Cienie tożsamości":"Shadows of Self", "Żałobne opaski":"The Bands of Mourning",
+  "Tajna historia":"Mistborn: Secret History", "Jedenasty metal, Allomanta Jak":"The Eleventh Metal, Allomancer Jak", "Zaginiony metal":"The Lost Metal",
+  "Rozjemca":"Warbreaker",
+  "Droga królów":"The Way of Kings", "Słowa światłości":"Words of Radiance", "Tancerka krawędzi":"Edgedancer",
+  "Dawca przysięgi":"Oathbringer", "Odprysk świtu":"Dawnshard", "Rytm wojny":"Rhythm of War", "Wiatr i prawda":"Wind and Truth",
+  "Pozostałe teksty z W bezkres magii":"The rest of Arcanum Unbounded", "Biały Piasek 1–3":"White Sand 1–3",
+  "Warkocz ze Szmaragdowego Morza":"Tress of the Emerald Sea", "Yumi i Malarz Koszmarów":"Yumi and the Nightmare Painter",
+  "Słoneczny Mąż":"The Sunlit Man", "Stalowe Serce":"Steelheart", "Rytmatysta":"The Rithmatist",
+  "Oszczędnego czarodzieja poradnik przetrwania w średniowiecznej Anglii":"The Frugal Wizard's Handbook for Surviving Medieval England",
+  "Stan idealny":"Perfect State"
+};
+// id: [strony (przybl.), rok, świat Cosmere lub null]
+const META = {
+  "Elantris":[620,2005,"Sel"], "Nadzieja Elantris":[20,2006,"Sel"], "Dusza cesarza":[170,2012,"Sel"],
+  "Z mgły zrodzony":[650,2006,"Scadrial"], "Studnia wstąpienia":[760,2007,"Scadrial"], "Bohater wieków":[750,2008,"Scadrial"],
+  "Stop prawa":[330,2011,"Scadrial"], "Cienie tożsamości":[380,2015,"Scadrial"], "Żałobne opaski":[450,2016,"Scadrial"],
+  "Tajna historia":[150,2016,"Scadrial"], "Jedenasty metal, Allomanta Jak":[40,2011,"Scadrial"], "Zaginiony metal":[530,2022,"Scadrial"],
+  "Rozjemca":[650,2009,"Nalthis"],
+  "Droga królów":[1000,2010,"Roshar"], "Słowa światłości":[1090,2014,"Roshar"], "Tancerka krawędzi":[270,2016,"Roshar"],
+  "Dawca przysięgi":[1240,2017,"Roshar"], "Odprysk świtu":[190,2020,"Roshar"], "Rytm wojny":[1230,2020,"Roshar"], "Wiatr i prawda":[1340,2024,"Roshar"],
+  "Pozostałe teksty z W bezkres magii":[400,2016,"Inne"], "Biały Piasek 1–3":[450,2016,"Taldain"],
+  "Warkocz ze Szmaragdowego Morza":[480,2023,"Lumar"], "Yumi i Malarz Koszmarów":[450,2023,"Komashi"],
+  "Słoneczny Mąż":[400,2023,"Canticle"], "Isles of the Emberdark":[400,2025,"Inne"], "The Fires of December":[450,2026,"Inne"],
+  "Defending Elysium":[60,2008,null], "Skyward":[510,2018,null], "Starsight":[460,2019,null], "Sunreach":[190,2021,null],
+  "ReDawn":[250,2021,null], "Cytonic":[420,2021,null], "Evershore":[250,2021,null], "Defiant":[450,2023,null], "Blightfall":[500,2026,null],
+  "Stalowe Serce":[390,2013,null], "Mitosis":[40,2013,null], "Firefight":[410,2015,null], "Calamity":[420,2016,null],
+  "Legion":[90,2012,null], "Skin Deep":[200,2014,null], "Lies of the Beholder":[170,2018,null],
+  "Alcatraz Versus the Evil Librarians":[300,2007,null], "The Scrivener's Bones":[330,2008,null], "The Knights of Crystallia":[300,2009,null],
+  "The Shattered Lens":[290,2010,null], "The Dark Talent":[270,2016,null], "Bastille Versus the Evil Librarians":[300,2022,null],
+  "Rytmatysta":[380,2013,null], "Oszczędnego czarodzieja poradnik przetrwania w średniowiecznej Anglii":[440,2023,null],
+  "Songs of the Dead":[460,2026,null], "Stan idealny":[80,2015,null], "Snapshot, Dreamer":[120,2017,null]
+};
+// twarde zależności poza kolejnością w seriach
+const PRE = {
+  "Słowa światłości":["Rozjemca"],
+  "Tajna historia":["Bohater wieków"],
+  "Słoneczny Mąż":["Zaginiony metal","Rytm wojny"],
+  "Isles of the Emberdark":["Słoneczny Mąż"]
+};
+// zapowiedzi i premiery; d: "RRRR-MM-DD", "RRRR-MM" (znany tylko miesiąc) albo brak (bez daty)
+// id: książka z mapy (można ją wtedy odhaczać); t/te: nazwa zapowiedzi, której jeszcze nie ma na mapie
+const UPC = [
+  {id:"The Fires of December", d:"2026-10-06", c:"hoid", s:"Hoid", n:"E-book i audiobook. Wydanie drukowane 8.12.2026.", ne:"E-book and audiobook. Print edition on 8 Dec 2026."},
+  {id:"Blightfall", d:"2026-09-01", c:"non", s:"Riftwake #1", n:"Z Janci Patterson. Nowa trylogia kontynuująca Skyward.", ne:"With Janci Patterson. A new trilogy continuing Skyward."},
+  {id:"Songs of the Dead", d:"2026-06", c:"non", s:"The Strata Wars #1", n:"Z Peterem Orullianem, poza Cosmere.", ne:"With Peter Orullian, outside the Cosmere."},
+  {t:"Z mgły zrodzony, Era 3", te:"Mistborn, Era 3", c:"scad", s:"Scadrial", n:"Zapowiedziana trylogia, kolejny duży projekt w Cosmere.", ne:"An announced trilogy, the next big Cosmere project."},
+  {t:"Archiwum Burzowego Światła, tom 6", te:"The Stormlight Archive, book 6", c:"rosh", s:"Roshar", n:"Początek drugiego łuku (tomy 6–10), planowany po Erze 3.", ne:"The start of the second arc (books 6–10), planned after Era 3."},
+  {t:"Kontynuacje Elantris", te:"Elantris sequels", c:"sel", s:"Sel", n:"Zapowiadane od lat.", ne:"Announced years ago."},
+  {t:"Kontynuacja Rozjemcy (Nightblood)", te:"Warbreaker sequel (Nightblood)", c:"nal", s:"Nalthis", n:"Zapowiedziana, bez terminu.", ne:"Announced, no timeline yet."}
+];
+// długość audiobooków w minutach (stan 30.09.2026); tomy dzielone na części zsumowane
+// pełne nagrania, bez adaptacji słuchowiskowych (GraphicAudio / "Dramatized Adaptation")
+const AUDIO = {
+  // Audioteka, polskie nagrania
+  "Droga królów":2695, "Słowa światłości":3018, "Tancerka krawędzi":364,
+  "Dawca przysięgi":3460,   // cz. 1 26:13 + cz. 2 31:27
+  "Odprysk świtu":412,
+  "Rytm wojny":3382,        // cz. 1 27:05 + cz. 2 29:17
+  "Wiatr i prawda":3900,    // cz. 1 33:40 + cz. 2 31:20
+  "Zaginiony metal":997, "Warkocz ze Szmaragdowego Morza":653, "Yumi i Malarz Koszmarów":867, "Słoneczny Mąż":948,
+  "Oszczędnego czarodzieja poradnik przetrwania w średniowiecznej Anglii":612,
+  // Storytel, polskie nagrania
+  "Z mgły zrodzony":1455,    // cz. 1 12:19 + cz. 2 11:56
+  "Studnia wstąpienia":1581, // cz. 1 16:15 + cz. 2 10:06
+  "Bohater wieków":1546,     // cz. 1 14:08 + cz. 2 11:38
+  "Stop prawa":625, "Cienie tożsamości":747, "Żałobne opaski":833,
+  "Stalowe Serce":755, "Firefight":689 /* Pożar */, "Calamity":702,
+  "Skyward":962 /* Do gwiazd */, "Starsight":914 /* Wśród gwiazd */, "Cytonic":910 /* Cytoniczka */,
+  "Alcatraz Versus the Evil Librarians":380 /* Piasek Raszida */, "The Scrivener's Bones":376 /* Kości skryby */,
+  "The Knights of Crystallia":375 /* Rycerze Krystalii */, "The Shattered Lens":348 /* Zakon Rozbitej Soczewki */,
+  "The Dark Talent":317 /* Mroczny talent */,
+  // Storytel, tylko nagrania angielskie
+  "Bastille Versus the Evil Librarians":291, "Songs of the Dead":852
+};
+const PPH = 24;   // stron na godzinę nagrania: szacunek dla książek, których nie ma w AUDIO
+const hours = id => AUDIO[id] ? AUDIO[id] / 60 : BOOK[id].pages / PPH;
+const SPEEDS = [1, 1.25, 1.5, 1.75, 2];
+
+/* ---------- teksty interfejsu ---------- */
+const S = {
+  pl: {
+    title:"Mapa czytania Sandersona", locale:"pl-PL",
+    mark:"Oznacz jako przeczytane: ", opt:"opcjonalne",
+    progress:(a, b) => `Przeczytane: <b>${a}</b> z ${b}`,
+    of:(a, b) => `${a} z ${b}`,
+    world:(a, b, p) => `${a} z ${b}, ${p} stron`,
+    mapLabel:"Mapa światów Cosmere z postępem czytania", other:"Inne światy",
+    soon:"wkrótce", era3:"Z mgły zrodzony, Era 3 (zapowiedź)",
+    q:x => "„" + x + "”",
+    spoiler:(id, list) => `Uwaga na spoilery: ${id} zakłada znajomość: ${list}. Oznaczyłem jako przeczytane.`,
+    spoilerStart:(id, list) => `Uwaga na spoilery: ${id} zakłada znajomość: ${list}. Dodałem do czytanych teraz.`,
+    nextT:"Co dalej?", nextMain:"Następna na głównej ścieżce Cosmere", nextSeries:"Kontynuuj serię: ", first:"Najpierw: ",
+    allDone:"Wszystkie główne pozycje odhaczone. Zostają utwory opcjonalne i zapowiedzi, m.in. Era 3 Z mgły zrodzonego.",
+    stats:["Cosmere, książki", "Cosmere, strony", "Wszystko, książki", "Wszystko, strony"],
+    ready:"gotowe",
+    days:d => {
+      if (d < 60) return `ok. ${d} ${d === 1 ? "dzień" : "dni"}`;
+      const mo = Math.round(d / 30.4);
+      return `ok. ${d} dni, czyli około ${mo} ${mo === 1 ? "miesiąca" : "miesięcy"}`;
+    },
+    pace:(c, cd, a, ad) => `Do końca Cosmere zostało ${c} stron: ${cd}.<br>Do końca wszystkiego z tej mapy: ${a} stron, ${ad}.`,
+    listen:(c, cs, cd, a, as, ad) => `Do końca Cosmere zostało ok. ${c} h nagrania${cs}: ${cd}.<br>Do końca wszystkiego z tej mapy: ok. ${a} h${as}, ${ad}.`,
+    atSpeed:(h, s) => ` (${h} h przy ${s}×)`,
+    readEmpty:"Nie czytasz teraz niczego. Wybierz książkę poniżej albo kliknij „Zacznij czytać” w sekcji Co dalej.",
+    page:"str.", ofPages:"z", pageAria:"Strona, na której jesteś: ", ofAria:"Liczba stron w Twoim wydaniu: ",
+    finish:"Skończone", stopReading:"Przerwij", stopTitle:"Usuń z czytanych teraz bez oznaczania jako przeczytane",
+    choose:"Wybierz książkę…", cosPath:"Główna ścieżka Cosmere", start:"Zacznij czytać", markRead:"Oznacz jako przeczytane", isRead:"Przeczytane",
+    readingLine:(p, of, pc) => `Czytasz teraz: str. ${p} z ${of} (${pc})`,
+    readingPct:pc => `Czytasz teraz: ${pc}`,
+    upSoon:"Nadchodzące", upOut:"Niedawno wydane", upNone:"Zapowiedziane, bez daty", announced:"zapowiedź",
+    cd:(k, d) => k === "none" ? "bez daty" : k === "futureM" ? "wkrótce" : k === "outM" ? "już jest" : k === "today" ? "premiera dziś" :
+      d === 1 ? "premiera jutro" : d === -1 ? "premiera wczoraj" :
+      d > 0 ? `za ${d} ${pl(d, "dzień", "dni", "dni")}` : `${-d} ${pl(-d, "dzień", "dni", "dni")} temu`,
+    theme:{auto:"◐ Motyw: auto", light:"☀ Motyw: jasny", dark:"☾ Motyw: ciemny"}, themeTitle:"Zmień motyw kolorów",
+    confirm:"Kliknij ponownie, aby potwierdzić",
+    copied:"Kod skopiowany do schowka.", manual:"Zaznacz kod powyżej i skopiuj go ręcznie (Ctrl+C).",
+    pasteFirst:"Najpierw wklej kod w pole poniżej.", broken:"Ten kod jest niepełny albo uszkodzony. Skopiuj go jeszcze raz w całości.",
+    foreign:"To nie wygląda na kod postępu z tej strony.",
+    contains:n => `Kod zawiera ${n} ${pl(n, "przeczytaną pozycję", "przeczytane pozycje", "przeczytanych pozycji")}. Obecny postęp zostanie zastąpiony.`,
+    loaded:n => `Wczytano ${n} ${pl(n, "pozycję", "pozycje", "pozycji")}.`
+  },
+  en: {
+    title:"Sanderson Reading Map", locale:"en-US",
+    mark:"Mark as read: ", opt:"optional",
+    progress:(a, b) => `Read: <b>${a}</b> of ${b}`,
+    of:(a, b) => `${a} of ${b}`,
+    world:(a, b, p) => `${a} of ${b}, ${p} of pages`,
+    mapLabel:"Map of the Cosmere worlds with reading progress", other:"Other worlds",
+    soon:"soon", era3:"Mistborn, Era 3 (announced)",
+    q:x => "“" + x + "”",
+    spoiler:(id, list) => `Spoiler alert: ${id} assumes you know ${list}. Marked as read anyway.`,
+    spoilerStart:(id, list) => `Spoiler alert: ${id} assumes you know ${list}. Added to your current reads anyway.`,
+    nextT:"What next?", nextMain:"Next on the main Cosmere path", nextSeries:"Continue the series: ", first:"First: ",
+    allDone:"All main titles ticked off. What's left are optional works and announcements, including Mistborn Era 3.",
+    stats:["Cosmere, books", "Cosmere, pages", "Everything, books", "Everything, pages"],
+    ready:"done",
+    days:d => {
+      if (d < 60) return `about ${d} ${d === 1 ? "day" : "days"}`;
+      const mo = Math.round(d / 30.4);
+      return `about ${d} days, roughly ${mo} ${mo === 1 ? "month" : "months"}`;
+    },
+    pace:(c, cd, a, ad) => `${c} pages left to finish the Cosmere: ${cd}.<br>To finish everything on this map: ${a} pages, ${ad}.`,
+    listen:(c, cs, cd, a, as, ad) => `About ${c} hours of audio left to finish the Cosmere${cs}: ${cd}.<br>To finish everything on this map: about ${a} hours${as}, ${ad}.`,
+    atSpeed:(h, s) => ` (${h} h at ${s}×)`,
+    readEmpty:"You're not reading anything right now. Pick a book below or click “Start reading” under What next?",
+    page:"page", ofPages:"of", pageAria:"Current page: ", ofAria:"Pages in your edition: ",
+    finish:"Finished", stopReading:"Stop", stopTitle:"Remove from current reads without marking as read",
+    choose:"Choose a book…", cosPath:"Main Cosmere path", start:"Start reading", markRead:"Mark as read", isRead:"Read",
+    readingLine:(p, of, pc) => `Reading now: page ${p} of ${of} (${pc})`,
+    readingPct:pc => `Reading now: ${pc}`,
+    upSoon:"Coming up", upOut:"Recently released", upNone:"Announced, no date yet", announced:"announced",
+    cd:(k, d) => k === "none" ? "no date yet" : k === "futureM" ? "coming soon" : k === "outM" ? "out now" : k === "today" ? "out today" :
+      d === 1 ? "out tomorrow" : d === -1 ? "out yesterday" :
+      d > 0 ? `in ${d} days` : `${-d} days ago`,
+    theme:{auto:"◐ Theme: auto", light:"☀ Theme: light", dark:"☾ Theme: dark"}, themeTitle:"Change colour theme",
+    confirm:"Click again to confirm",
+    copied:"Code copied to the clipboard.", manual:"Select the code above and copy it manually (Ctrl+C).",
+    pasteFirst:"Paste a code into the field below first.", broken:"This code is incomplete or damaged. Copy it again in full.",
+    foreign:"This doesn't look like a progress code from this page.",
+    contains:n => `The code contains ${n} read ${n === 1 ? "title" : "titles"}. Your current progress will be replaced.`,
+    loaded:n => `Loaded ${n} ${n === 1 ? "title" : "titles"}.`
+  }
+};
+const LKEY = "sanderson-lang";
+let lang = "pl";
+try {
+  const q = new URLSearchParams(location.search).get("lang");
+  const saved = localStorage.getItem(LKEY);
+  if (q === "en" || q === "pl") lang = q; else if (saved === "en" || saved === "pl") lang = saved;
+} catch(e) {}
+const t = () => S[lang];
+const N = id => (lang === "en" && EN[id]) || id;   // tytuł do wyświetlenia
+const tag = s => lang === "en" ? s.replace("Archiwum", "Stormlight") : s;
+
+// polskie wersje statycznych tekstów trzeba zapamiętać, zanim cokolwiek je zmieni
+const I18N = new Map();
+document.querySelectorAll("[data-en]").forEach(el => I18N.set(el, {pl:el.innerHTML, en:el.dataset.en}));
+const I18N_ATTR = [];
+["aria-label", "placeholder"].forEach(a => document.querySelectorAll(`[data-en-${a}]`).forEach(el =>
+  I18N_ATTR.push({el, a, pl:el.getAttribute(a), en:el.getAttribute(`data-en-${a}`)})));
+function applyStatic(){
+  I18N.forEach((v, el) => { el.innerHTML = v[lang]; delete el.dataset.armed; });
+  I18N_ATTR.forEach(x => x.el.setAttribute(x.a, x[lang]));
+  document.documentElement.lang = lang;
+  document.title = t().title;
+  document.querySelectorAll(".lang").forEach(b => b.setAttribute("aria-pressed", b.dataset.lang === lang));
+}
+
+/* ---------- motyw ---------- */
+const TKEY = "sanderson-theme", THEMES = ["auto", "light", "dark"];
+let theme = document.documentElement.dataset.theme || "auto";
+const themeBtn = document.getElementById("themeBtn");
+function applyTheme(){
+  if (theme === "auto") delete document.documentElement.dataset.theme;
+  else document.documentElement.dataset.theme = theme;
+  themeBtn.textContent = t().theme[theme];
+  themeBtn.title = t().themeTitle;
+}
+themeBtn.addEventListener("click", () => {
+  theme = THEMES[(THEMES.indexOf(theme) + 1) % THEMES.length];
+  try { if (theme === "auto") localStorage.removeItem(TKEY); else localStorage.setItem(TKEY, theme); } catch(e) {}
+  applyTheme();
+});
+
+/* ---------- zapis stanu ---------- */
+const KEY = "sanderson-read-v2", PKEY = "sanderson-pace", RKEY = "sanderson-reading", AKEY = "sanderson-listen";
+let done = {}, reading = {};
+try { done = JSON.parse(localStorage.getItem(KEY) || "null") || {}; } catch(e) { done = {}; }
+try { reading = JSON.parse(localStorage.getItem(RKEY) || "null") || {}; } catch(e) { reading = {}; }
+try {
+  const old = JSON.parse(localStorage.getItem("sanderson-read-v1") || "null");
+  if (old) { Object.keys(old).forEach(i => { if (R[i]) done[R[i].t] = true; }); localStorage.removeItem("sanderson-read-v1"); }
+} catch(e) {}
+if (done["W bezkres magii"]) { done["Pozostałe teksty z W bezkres magii"] = true; delete done["W bezkres magii"]; }
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch(e) {} };
+const saveReading = () => { try { localStorage.setItem(RKEY, JSON.stringify(reading)); } catch(e) {} };
+const esc = t => String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
+const fmt = n => n.toLocaleString(t().locale);
+// polska odmiana: pl(n, "pozycja", "pozycje", "pozycji")
+const pl = (n, one, few, many) => n === 1 ? one : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14)) ? few : many;
+
+/* ---------- daty premier ---------- */
+function parseD(s){
+  if (!s) return null;
+  const [y, m, d] = s.split("-").map(Number);
+  return {date:new Date(y, m - 1, d || 1), month:!d};
+}
+function today0(){ const n = new Date(); return new Date(n.getFullYear(), n.getMonth(), n.getDate()); }
+// k: future / today / out (dokładna data), futureM / outM (znany miesiąc), none (bez daty); dd: dni od dziś
+function relStatus(u){
+  const P = parseD(u.d);
+  if (!P) return {k:"none"};
+  const now = today0(), dd = Math.round((P.date - now) / 864e5);
+  if (P.month){
+    const future = P.date.getFullYear() * 12 + P.date.getMonth() > now.getFullYear() * 12 + now.getMonth();
+    return {k:future ? "futureM" : "outM", P, dd};
+  }
+  return {k:dd > 0 ? "future" : dd === 0 ? "today" : "out", P, dd};
+}
+const upOf = id => UPC.find(u => u.id === id);
+const isOut = id => { const u = upOf(id); if (!u) return true; const k = relStatus(u).k; return k === "out" || k === "outM" || k === "today"; };
+const isNew = id => { const u = upOf(id); if (!u) return false; const s = relStatus(u); return s.k !== "none" && s.dd >= -180; };
+
+/* ---------- rejestr książek ---------- */
+const BOOK = {};
+R.forEach(b => { BOOK[b.t] = {color:`var(--${b.c})`, cosmere:true, opt:!!b.opt, inR:true}; });
+
+/* ---------- główna ścieżka ---------- */
+const route = document.getElementById("route");
+function buildRoute(){
+  route.innerHTML = "";
+  let main = 0;
+  const en = lang === "en";
+  R.forEach(b => {
+    const li = document.createElement("li");
+    li.className = "stop" + (b.opt ? " opt" : "");
+    li.dataset.id = b.t;
+    li.style.setProperty("--c", `var(--${b.c})`);
+    const label = b.opt ? "·" : String(++main);
+    const note = en ? b.ne : b.n;
+    li.innerHTML = `<button type="button" aria-label="${esc(t().mark + N(b.t))}">${label}</button>
+      <div><div class="t">${esc(N(b.t))}<span class="tag">${esc(tag(b.s))}</span>${b.opt ? `<span class="tag" style="--c:var(--muted)">${t().opt}</span>` : ''}</div>
+      <div class="orig">${esc(en ? b.oe : b.o)}</div><div class="rd" hidden></div>${note ? `<p class="note${b.w ? ' warn' : ''}">${esc(note)}</p>` : ''}</div>`;
+    li.querySelector("button").addEventListener("click", () => toggle(b.t));
+    route.appendChild(li);
+  });
+}
+
+/* ---------- serie ---------- */
+const CHAINS = [];
+document.querySelectorAll(".series").forEach(sr => {
+  const color = sr.style.getPropertyValue("--c").trim();
+  const nm = sr.querySelector("h3 .nm");
+  const ordered = !sr.querySelector(".chain").classList.contains("loose");
+  const items = [];
+  sr.querySelectorAll(".chain .b").forEach(el => {
+    const id = el.firstChild.textContent.trim();
+    el.dataset.id = id;
+    el.addEventListener("click", () => toggle(id));
+    const opt = el.classList.contains("o");
+    items.push({id, opt});
+    if (!BOOK[id]) BOOK[id] = {color, cosmere:false, opt};
+  });
+  const h = sr.querySelector("h3");
+  const c = document.createElement("span"); c.className = "count"; h.appendChild(c);
+  CHAINS.push({nm, color, ordered, items, el:sr});
+});
+function labelChains(){
+  document.querySelectorAll(".chain .b").forEach(el => {
+    el.firstChild.nodeValue = N(el.dataset.id);
+    el.setAttribute("aria-label", t().mark + N(el.dataset.id));
+  });
+}
+Object.keys(BOOK).forEach(id => {
+  const m = META[id] || [300, 2020, null];
+  Object.assign(BOOK[id], {pages:m[0], year:m[1], world:m[2]});
+  if (m[2]) BOOK[id].cosmere = true;
+});
+const ALL = Object.keys(BOOK);
+const COS = ALL.filter(id => BOOK[id].cosmere);
+Object.keys(reading).forEach(id => { if (!BOOK[id] || done[id] || !reading[id]) delete reading[id]; });
+
+/* ---------- postęp stron (przeczytane + rozpoczęte) ---------- */
+const frac = id => done[id] ? 1 : reading[id] ? Math.min(1, Math.max(0, reading[id].p / Math.max(1, reading[id].of))) : 0;
+const sumAll = ids => ids.reduce((a, id) => a + BOOK[id].pages, 0);
+const sumRead = ids => ids.reduce((a, id) => a + frac(id) * BOOK[id].pages, 0);
+const left = ids => Math.max(0, Math.round(sumAll(ids) - sumRead(ids)));
+
+/* ---------- pierścienie ---------- */
+function ring(frac, size, color, stroke, label){
+  const r = (size - stroke) / 2, C = 2 * Math.PI * r, off = C * (1 - frac);
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true">
+    <circle class="ring-track" cx="${size/2}" cy="${size/2}" r="${r}" stroke-width="${stroke}"/>
+    <circle class="ring-val" cx="${size/2}" cy="${size/2}" r="${r}" stroke-width="${stroke}" style="stroke:${color}"
+      stroke-dasharray="${C}" stroke-dashoffset="${off}" transform="rotate(-90 ${size/2} ${size/2})"/>
+    ${label ? `<text class="ring-txt" x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-size="${size/4.6}">${label}</text>` : ""}
+  </svg>`;
+}
+const pct = f => Math.round(f * 100) + "%";
+
+/* ---------- mapa światów ---------- */
+const WORLDS = [
+  {w:"Scadrial", x:170, y:140, mx:100, my:300, c:"scad"}, {w:"Roshar", x:385, y:175, mx:200, my:110, c:"rosh"},
+  {w:"Sel", x:600, y:120, mx:300, my:300, c:"sel"}, {w:"Nalthis", x:105, y:305, mx:300, my:460, c:"nal"},
+  {w:"Taldain", x:262, y:58, mx:100, my:460, c:"cos"}, {w:"Lumar", x:280, y:320, mx:100, my:605, c:"hoid"},
+  {w:"Komashi", x:440, y:330, mx:300, my:605, c:"hoid"}, {w:"Canticle", x:610, y:300, mx:100, my:750, c:"cos"},
+  {w:"Inne", x:505, y:55, mx:300, my:750, c:"cos", other:true}
+];
+const map = document.getElementById("map");
+function drawMap(){
+  let links = "", body = "";
+  const small = window.matchMedia("(max-width:560px)").matches;
+  const nameSize = small ? 22 : 17, cntSize = small ? 16 : 13;
+  map.setAttribute("viewBox", small ? "0 0 400 840" : "0 0 720 420");
+  map.setAttribute("aria-label", t().mapLabel);
+  WORLDS.forEach(W => { W.X = small ? W.mx : W.x; W.Y = small ? W.my : W.y; });
+  const hub = WORLDS[1];
+  WORLDS.forEach(W => {
+    const ids = COS.filter(id => BOOK[id].world === W.w);
+    W.ids = ids;
+    W.total = sumAll(ids); W.read = sumRead(ids);
+    W.r = 16 + Math.sqrt(W.total) * 0.55;
+  });
+  WORLDS.forEach((W, i) => { if (i !== 1) links += `<line class="link" x1="${hub.X}" y1="${hub.Y}" x2="${W.X}" y2="${W.Y}"/>`; });
+  WORLDS.forEach((W, i) => {
+    const f = W.total ? W.read / W.total : 0, h = 2 * W.r * f;
+    const nDone = W.ids.filter(id => done[id]).length;
+    const col = `var(--${W.c})`;
+    const name = W.other ? t().other : W.w;
+    const list = W.ids.map(id => (done[id] ? "✓ " : reading[id] ? "◐ " : "○ ") + N(id)).join("\n");
+    body += `<g><title>${esc(name)}\n${esc(list)}</title>
+      <clipPath id="cp${i}"><circle cx="${W.X}" cy="${W.Y}" r="${W.r}"/></clipPath>
+      <circle cx="${W.X}" cy="${W.Y}" r="${W.r}" style="fill:var(--paper)"/>
+      <circle cx="${W.X}" cy="${W.Y}" r="${W.r}" style="fill:${col};fill-opacity:.12"/>
+      <rect clip-path="url(#cp${i})" x="${W.X - W.r}" y="${W.Y + W.r - h}" width="${2*W.r}" height="${h}" style="fill:${col}"/>
+      <circle cx="${W.X}" cy="${W.Y}" r="${W.r}" style="fill:none;stroke:${col};stroke-width:${f === 1 ? 4 : 2}"/>
+      <text class="pl-name" x="${W.X}" y="${W.Y + W.r + 1.2*nameSize}">${esc(name)}</text>
+      <text class="pl-cnt" x="${W.X}" y="${W.Y + W.r + 1.2*nameSize + 1.05*cntSize}">${t().world(nDone, W.ids.length, pct(f))}</text></g>`;
+  });
+  map.innerHTML = links + body;
+}
+
+/* ---------- oś czasu ---------- */
+const tl = document.getElementById("tl");
+function buildTimeline(){
+  const years = {};
+  ALL.forEach(id => { (years[BOOK[id].year] ||= []).push(id); });
+  let html = "";
+  for (let y = 2005; y <= 2026; y++){
+    const ids = (years[y] || []).sort((a, b) => (BOOK[b].cosmere - BOOK[a].cosmere));
+    html += `<div class="yr"><span class="y">${y === 2005 || y % 5 === 0 || y === 2026 ? y : "'" + String(y).slice(2)}</span>` +
+      ids.map(id => `<button type="button" class="td${isOut(id) ? "" : " future"}" data-id="${esc(id)}" style="--c:${BOOK[id].color}" title="${esc(N(id))} (${y})" aria-label="${esc(N(id))}, ${y}"></button>`).join("") + `</div>`;
+  }
+  html += `<div class="yr soon"><span class="y">${t().soon}</span><span class="td plan" style="--c:var(--scad)" title="${esc(t().era3)}"></span></div>`;
+  tl.innerHTML = html;
+  tl.querySelectorAll("button.td").forEach(b => b.addEventListener("click", () => toggle(b.dataset.id)));
+}
+
+/* ---------- zależności i ostrzeżenia ---------- */
+function prereqs(id){
+  const out = new Set(PRE[id] || []);
+  CHAINS.forEach(ch => {
+    if (!ch.ordered) return;
+    const i = ch.items.findIndex(x => x.id === id);
+    if (i < 0) return;
+    ch.items.slice(0, i).forEach(x => { if (!x.opt) out.add(x.id); });
+  });
+  return [...out];
+}
+const missing = id => prereqs(id).filter(p => !done[p]);
+
+const toast = document.getElementById("toast"), toastTxt = document.getElementById("toastTxt");
+let tt;
+function warn(msg){
+  toastTxt.textContent = msg; toast.hidden = false;
+  clearTimeout(tt); tt = setTimeout(() => toast.hidden = true, 7000);
+}
+document.getElementById("toastX").addEventListener("click", () => toast.hidden = true);
+const missingList = id => missing(id).map(x => t().q(N(x))).join(", ");
+
+function toggle(id){
+  if (done[id]) delete done[id];
+  else {
+    done[id] = true;
+    if (reading[id]) { delete reading[id]; saveReading(); }
+    if (missing(id).length) warn(t().spoiler(t().q(N(id)), missingList(id)));
+  }
+  save(); update();
+}
+
+/* ---------- czytam teraz ---------- */
+function startReading(id){
+  if (!BOOK[id] || done[id] || reading[id]) return;
+  reading[id] = {p:0, of:BOOK[id].pages};
+  saveReading();
+  if (missing(id).length) warn(t().spoilerStart(t().q(N(id)), missingList(id)));
+  update();
+}
+const readList = document.getElementById("readList"), readAdd = document.getElementById("readAdd");
+function renderReading(){
+  const L = t();
+  const ids = Object.keys(reading);
+  readList.innerHTML = !ids.length ? `<li class="empty">${L.readEmpty}</li>` : ids.map(id => {
+    const r = reading[id], f = frac(id);
+    return `<li style="--c:${BOOK[id].color}" data-id="${esc(id)}">
+      <div class="rt">${esc(N(id))}</div>
+      <div class="bar"><span style="width:${f * 100}%"></span></div>
+      <div class="rctl">
+        <label>${L.page} <input type="number" class="rp" min="0" step="1" value="${r.p}" aria-label="${esc(L.pageAria + N(id))}"></label>
+        <label>${L.ofPages} <input type="number" class="ro" min="1" step="1" value="${r.of}" aria-label="${esc(L.ofAria + N(id))}"></label>
+        <span class="rpct">${pct(f)}</span>
+        <button type="button" class="btn fin">${L.finish}</button>
+        <button type="button" class="btn stp" title="${esc(L.stopTitle)}">${L.stopReading}</button>
+      </div></li>`;
+  }).join("");
+  // lista do wyboru: wydane, nieprzeczytane i jeszcze nierozpoczęte
+  const avail = id => !done[id] && !reading[id] && isOut(id);
+  const opt = id => `<option value="${esc(id)}">${esc(N(id))}</option>`;
+  let html = `<option value="">${L.choose}</option>`;
+  const cos = R.map(b => b.t).filter(avail);
+  if (cos.length) html += `<optgroup label="${esc(L.cosPath)}">${cos.map(opt).join("")}</optgroup>`;
+  CHAINS.forEach(ch => {
+    const ids = ch.items.map(x => x.id).filter(id => !BOOK[id].inR && avail(id));
+    if (ids.length) html += `<optgroup label="${esc(ch.nm.textContent.trim())}">${ids.map(opt).join("")}</optgroup>`;
+  });
+  readAdd.innerHTML = html;
+}
+readList.addEventListener("input", e => {
+  const li = e.target.closest("li[data-id]"); if (!li) return;
+  const id = li.dataset.id, r = reading[id]; if (!r) return;
+  if (e.target.classList.contains("rp")) r.p = Math.max(0, parseInt(e.target.value) || 0);
+  else if (e.target.classList.contains("ro")) r.of = Math.max(1, parseInt(e.target.value) || 1);
+  else return;
+  saveReading();
+  const f = frac(id);
+  li.querySelector(".bar span").style.width = f * 100 + "%";
+  li.querySelector(".rpct").textContent = pct(f);
+  refresh();   // bez przebudowy listy, żeby pole nie traciło kursora
+});
+readList.addEventListener("click", e => {
+  const li = e.target.closest("li[data-id]"); if (!li) return;
+  const id = li.dataset.id;
+  if (e.target.closest(".fin")) toggle(id);
+  else if (e.target.closest(".stp")) { delete reading[id]; saveReading(); update(); }
+});
+document.getElementById("readAddBtn").addEventListener("click", () => { if (readAdd.value) startReading(readAdd.value); });
+
+/* ---------- co dalej ---------- */
+const nextBox = document.getElementById("next");
+function renderNext(){
+  const items = [];
+  const mainNext = R.find(b => !b.opt && !done[b.t] && !reading[b.t]);
+  if (mainNext) items.push({k:t().nextMain, id:mainNext.t});
+  CHAINS.forEach(ch => {
+    if (!ch.ordered || !ch.items.some(x => done[x.id]) || ch.items.some(x => reading[x.id])) return;
+    const nx = ch.items.find(x => !x.opt && !done[x.id]);
+    if (nx && !items.some(i => i.id === nx.id)) items.push({k:t().nextSeries + ch.nm.textContent.trim(), id:nx.id});
+  });
+  const shown = items.slice(0, 4);
+  if (!shown.length){
+    nextBox.innerHTML = `<h3>${t().nextT}</h3><p>${t().allDone}</p>`;
+    return;
+  }
+  nextBox.innerHTML = `<h3>${t().nextT}</h3><ul>` + shown.map(it => {
+    const m = missing(it.id), u = upOf(it.id);
+    const side = isOut(it.id) ? `<button type="button" class="btn" data-start="${esc(it.id)}">${t().start}</button>`
+      : `<span class="k">${t().cd(relStatus(u).k, relStatus(u).dd)}</span>`;
+    return `<li style="--c:${BOOK[it.id].color}"><div><span class="k">${esc(it.k)}</span><span class="t2">${esc(N(it.id))}</span>
+      ${m.length ? `<span class="warn2">${t().first}${m.map(x => esc(N(x))).join(", ")}</span>` : ""}</div>${side}</li>`;
+  }).join("") + `</ul>`;
+}
+nextBox.addEventListener("click", e => { const b = e.target.closest("[data-start]"); if (b) startReading(b.dataset.start); });
+
+/* ---------- zapowiedzi i premiery ---------- */
+const upcBox = document.getElementById("upc");
+function renderUpcoming(){
+  const L = t();
+  const rows = UPC.map(u => ({u, s:relStatus(u)}));
+  const soon = rows.filter(x => ["future", "futureM", "today"].includes(x.s.k)).sort((a, b) => a.s.P.date - b.s.P.date);
+  const out = rows.filter(x => (x.s.k === "out" || x.s.k === "outM") && x.s.dd >= -180).sort((a, b) => b.s.P.date - a.s.P.date);
+  const none = rows.filter(x => x.s.k === "none");
+  const card = ({u, s}) => {
+    const title = u.id ? N(u.id) : (lang === "en" ? u.te : u.t);
+    const dt = !s.P ? L.announced : new Intl.DateTimeFormat(L.locale,
+      s.P.month ? {month:"long", year:"numeric"} : {day:"numeric", month:"long", year:"numeric"}).format(s.P.date);
+    let act = "";
+    if (u.id && BOOK[u.id] && isOut(u.id)){
+      if (done[u.id]) act = `<span>✓ ${L.isRead}</span>`;
+      else if (reading[u.id]) act = `<span>${L.readingPct(pct(frac(u.id)))}</span>`;
+      else act = `<button type="button" class="btn" data-start="${esc(u.id)}">${L.start}</button>
+        <button type="button" class="btn" data-done="${esc(u.id)}">${L.markRead}</button>`;
+    }
+    return `<li class="up" style="--c:var(--${u.c})"><div><span class="cd">${L.cd(s.k, s.dd)}</span><span class="dt">${esc(dt)}</span></div>
+      <div><div class="t3">${esc(title)}<span class="tag">${esc(u.s)}</span></div><p>${esc(lang === "en" ? u.ne : u.n)}</p>
+      ${act ? `<div class="upact">${act}</div>` : ""}</div></li>`;
+  };
+  const grp = (h, list) => list.length ? `<h3 class="upgrp">${h}</h3><ul class="upc">${list.map(card).join("")}</ul>` : "";
+  upcBox.innerHTML = grp(L.upSoon, soon) + grp(L.upOut, out) + grp(L.upNone, none);
+}
+upcBox.addEventListener("click", e => {
+  const s = e.target.closest("[data-start]"), d = e.target.closest("[data-done]");
+  if (s) startReading(s.dataset.start); else if (d) toggle(d.dataset.done);
+});
+
+/* ---------- statystyki i tempo ---------- */
+const paceIn = document.getElementById("pace"), listenIn = document.getElementById("listen"), speedIn = document.getElementById("speed");
+let speed = 1;
+try { const p = parseInt(localStorage.getItem(PKEY)); if (p > 0) paceIn.value = p; } catch(e) {}
+try {
+  const a = JSON.parse(localStorage.getItem(AKEY) || "null");
+  if (a) { if (a.h > 0) listenIn.value = a.h; if (SPEEDS.includes(a.s)) speed = a.s; }
+} catch(e) {}
+const saveListen = () => { try { localStorage.setItem(AKEY, JSON.stringify({h:parseFloat(listenIn.value) || 1, s:speed})); } catch(e) {} };
+paceIn.addEventListener("input", () => { try { localStorage.setItem(PKEY, paceIn.value); } catch(e) {} renderPace(); });
+listenIn.addEventListener("input", () => { saveListen(); renderListen(); });
+speedIn.addEventListener("change", () => { speed = parseFloat(speedIn.value) || 1; saveListen(); renderListen(); });
+function renderSpeeds(){
+  speedIn.innerHTML = SPEEDS.map(v => `<option value="${v}"${v === speed ? " selected" : ""}>${fmt(v)}×</option>`).join("");
+}
+
+const dur = d => d <= 0 ? t().ready : t().days(d);
+function renderPace(){
+  const p = Math.max(1, parseInt(paceIn.value) || 40);
+  const c = left(COS), a = left(ALL);
+  document.getElementById("paceOut").innerHTML = t().pace(fmt(c), dur(Math.ceil(c / p)), fmt(a), dur(Math.ceil(a / p)));
+}
+function renderListen(){
+  const perDay = Math.max(0.05, parseFloat(listenIn.value) || 1) * speed;   // godzin nagrania dziennie
+  const hLeft = ids => ids.reduce((a, id) => a + (1 - frac(id)) * hours(id), 0);
+  const hc = hLeft(COS), ha = hLeft(ALL);
+  const at = h => speed === 1 ? "" : t().atSpeed(fmt(Math.round(h / speed)), fmt(speed));
+  document.getElementById("listenOut").innerHTML = t().listen(
+    fmt(Math.round(hc)), at(hc), dur(Math.ceil(hc / perDay)),
+    fmt(Math.round(ha)), at(ha), dur(Math.ceil(ha / perDay)));
+}
+function renderStats(){
+  const cN = COS.filter(id => done[id]).length, aN = ALL.filter(id => done[id]).length;
+  const cP = sumRead(COS), cT = sumAll(COS), aP = sumRead(ALL), aT = sumAll(ALL);
+  const L = t().stats;
+  const cells = [
+    {f:cN / COS.length, c:"var(--rosh)", l:L[0], s:t().of(cN, COS.length)},
+    {f:cP / cT, c:"var(--cos)", l:L[1], s:t().of(fmt(Math.round(cP)), fmt(cT))},
+    {f:aN / ALL.length, c:"var(--scad)", l:L[2], s:t().of(aN, ALL.length)},
+    {f:aP / aT, c:"var(--hoid)", l:L[3], s:t().of(fmt(Math.round(aP)), fmt(aT))}
+  ];
+  document.getElementById("stats").innerHTML = cells.map(x =>
+    `<div class="stat">${ring(x.f, 120, x.c, 11, pct(x.f))}<div class="lbl">${x.l}</div><div class="sub2">${x.s}</div></div>`).join("");
+  renderPace(); renderListen();
+}
+
+/* potwierdzenie dwoma kliknięciami (okna confirm() bywają blokowane) */
+function twoStep(btn, fn){
+  let timer = null;
+  const restore = () => { delete btn.dataset.armed; btn.innerHTML = I18N.get(btn)[lang]; };
+  btn.addEventListener("click", () => {
+    if (!btn.dataset.armed){
+      btn.dataset.armed = "1"; btn.textContent = t().confirm;
+      clearTimeout(timer); timer = setTimeout(restore, 4000);
+      return;
+    }
+    clearTimeout(timer); restore(); fn();
+  });
+}
+
+/* ---------- eksport / import ---------- */
+const msg = s => document.getElementById("syncMsg").textContent = s;
+document.getElementById("expBtn").addEventListener("click", async () => {
+  const data = {v:3, d:Object.keys(done), r:reading, p:parseInt(paceIn.value) || 40, l:{h:parseFloat(listenIn.value) || 1, s:speed}};
+  const code = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+  const out = document.getElementById("expOut");
+  out.value = code; out.select();
+  try { await navigator.clipboard.writeText(code); msg(t().copied); }
+  catch(e) { try { document.execCommand("copy"); msg(t().copied); } catch(e2) { msg(t().manual); } }
+});
+function parseCode(){
+  const raw = document.getElementById("impIn").value.trim();
+  if (!raw) { msg(t().pasteFirst); return null; }
+  let data;
+  try { data = JSON.parse(decodeURIComponent(escape(atob(raw)))); } catch(e) { msg(t().broken); return null; }
+  if (!data || !Array.isArray(data.d)) { msg(t().foreign); return null; }
+  return data;
+}
+const impBtn = document.getElementById("impBtn");
+impBtn.addEventListener("click", e => {
+  // pierwsze kliknięcie: sprawdź kod zanim poprosisz o potwierdzenie
+  if (!impBtn.dataset.armed){
+    const d = parseCode();
+    if (!d) { e.stopImmediatePropagation(); return; }
+    msg(t().contains(d.d.length));
+  }
+}, true);
+twoStep(impBtn, () => {
+  const data = parseCode(); if (!data) return;
+  done = {}; data.d.forEach(id => { if (typeof id === "string") done[id] = true; });
+  reading = {};
+  if (data.r && typeof data.r === "object") Object.keys(data.r).forEach(id => {
+    const v = data.r[id];
+    if (BOOK[id] && !done[id] && v && v.p >= 0 && v.of >= 1) reading[id] = {p:Math.round(v.p), of:Math.round(v.of)};
+  });
+  if (data.p > 0) { paceIn.value = data.p; try { localStorage.setItem(PKEY, data.p); } catch(e) {} }
+  if (data.l){
+    if (data.l.h > 0) listenIn.value = data.l.h;
+    if (SPEEDS.includes(data.l.s)) speed = data.l.s;
+    renderSpeeds(); saveListen();
+  }
+  save(); saveReading(); update(); msg(t().loaded(data.d.length));
+  document.getElementById("impIn").value = "";
+});
+
+/* ---------- odświeżanie ---------- */
+const showOpt = document.getElementById("showOpt");
+try { if (localStorage.getItem("sanderson-opt") === "0") showOpt.checked = false; } catch(e) {}
+function markAll(){
+  document.querySelectorAll(".stop").forEach(li => {
+    const id = li.dataset.id, on = !!done[id], r = !on && reading[id];
+    li.classList.toggle("done", on);
+    li.classList.toggle("reading", !!r);
+    li.querySelector("button").setAttribute("aria-pressed", on);
+    const rd = li.querySelector(".rd");
+    rd.hidden = !r;
+    rd.textContent = r ? t().readingLine(r.p, r.of, pct(frac(id))) : "";
+  });
+  document.querySelectorAll(".chain .b, .td[data-id]").forEach(el => {
+    const id = el.dataset.id, on = !!done[id], r = !on && !!reading[id];
+    el.classList.toggle("done", on);
+    el.classList.toggle("reading", r);
+    el.style.setProperty("--f", r ? frac(id) : 0);
+    el.setAttribute("aria-pressed", on);
+  });
+  document.querySelectorAll(".chain .b").forEach(el => el.classList.toggle("new", isNew(el.dataset.id)));
+  CHAINS.forEach(ch => {
+    const n = ch.items.filter(x => done[x.id]).length;
+    ch.el.querySelector(".count").innerHTML = `<span class="sring">${ring(n / ch.items.length, 24, ch.color, 4)}</span> ${t().of(n, ch.items.length)}`;
+  });
+  const opt = showOpt.checked;
+  document.querySelectorAll(".stop.opt").forEach(el => el.classList.toggle("hidden", !opt));
+  const list = R.filter(b => opt || !b.opt);
+  document.getElementById("progress").innerHTML = t().progress(list.filter(b => done[b.t]).length, list.length);
+}
+// lekkie odświeżenie przy wpisywaniu strony
+function refresh(){ markAll(); renderStats(); drawMap(); renderUpcoming(); }
+function update(){ refresh(); renderNext(); renderReading(); }
+
+/* ---------- język ---------- */
+function render(){
+  applyStatic(); applyTheme(); renderSpeeds(); buildRoute(); labelChains(); buildTimeline(); update();
+}
+document.querySelectorAll(".lang").forEach(b => b.addEventListener("click", () => {
+  if (b.dataset.lang === lang) return;
+  lang = b.dataset.lang;
+  try { localStorage.setItem(LKEY, lang); } catch(e) {}
+  msg("");
+  render();
+}));
+
+window.matchMedia("(max-width:560px)").addEventListener("change", drawMap);
+showOpt.addEventListener("change", () => { try { localStorage.setItem("sanderson-opt", showOpt.checked ? "1" : "0"); } catch(e) {} update(); });
+twoStep(document.getElementById("reset"), () => { done = {}; reading = {}; save(); saveReading(); update(); });
+render();
+</script>
+</body>
+</html>
